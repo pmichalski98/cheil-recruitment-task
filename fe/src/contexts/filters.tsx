@@ -1,4 +1,4 @@
-import { Capacity, EnergyClass, Features } from '../interfaces/product';
+import { Capacity, EnergyClass, Feature } from '../interfaces/product';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 type Sort = 'price' | 'capacity';
@@ -10,7 +10,7 @@ export interface FiltersContextType {
     sort: Sort | '';
     capacity: Capacity | '';
     energyClass: EnergyClass | '';
-    feature: Features | '';
+    feature: Feature | '';
   };
   setFilters: (filters: FiltersContextType['filters']) => void;
 }
