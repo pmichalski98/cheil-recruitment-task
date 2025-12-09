@@ -1,4 +1,5 @@
 version: "3"
+
 services:
   mongo:
     image: mongo:latest
@@ -6,6 +7,36 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+
+  backend:
+    build:
+      context: .
+      dockerfile: be/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/cheil-task
+      - PORT=3001
+      - CORS_ORIGIN=http://localhost:5173
+    depends_on:
+      - mongo
+    volumes:
+      - ./be/src:/app/be/src
+      - ./shared:/app/shared
+
+  frontend:
+    build:
+      context: .
+      dockerfile: fe/Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3001/api
+    depends_on:
+      - backend
+    volumes:
+      - ./fe/src:/app/fe/src
+      - ./shared:/app/shared
 
 volumes:
   mongo-data:

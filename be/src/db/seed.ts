@@ -1,20 +1,12 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-import mongoose from "mongoose";
-import { connectDB } from "./index";
 import { mockData } from "./data";
 import { Product } from "../models/product.model";
 
-const seed = async () => {
-  await connectDB();
-  await Product.deleteMany();
+export const seedProducts = async () => {
+  const count = await Product.countDocuments();
+  if (count > 0) {
+    console.log(`Database already has ${count} products, skipping seed`);
+    return;
+  }
   await Product.insertMany(mockData);
   console.log("Products seeded successfully");
-  await mongoose.disconnect();
 };
-
-seed().catch((error) => {
-  console.error("Error seeding products:", error);
-  process.exit(1);
-});

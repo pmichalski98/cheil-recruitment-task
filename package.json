@@ -4,8 +4,10 @@
   "description": "Full Stack Test Task",
   "main": "index.js",
   "scripts": {
+    "dev": "docker compose up --build",
     "dev:fe": "cd fe && npm run dev",
-    "dev:be": "docker compose up"
+    "dev:be": "cd be && npm run dev",
+    "seed": "cd be && npm run seed"
   },
   "author": "Illia S",
   "license": "ISC",
