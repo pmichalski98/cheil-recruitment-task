@@ -1,4 +1,4 @@
-import { mockData } from '../../mock/data';
+import { useProducts } from '../../api/products';
 import { ProductCard } from '../cards/Product';
 import { Button } from '../button';
 import { useFilterContext } from '../../contexts/filters';
@@ -6,8 +6,21 @@ import { ChevronDown } from 'react-feather';
 
 export const Products = () => {
   const { filters, query } = useFilterContext();
+  const { data: products = [], isLoading, error } = useProducts();
 
-  const searchByCode = mockData.filter((product) => {
+  console.log(products);
+
+  if (isLoading) {
+    return <p className="text-center text-gray-500 text-xl mt-4">Ładowanie...</p>;
+  }
+
+  if (error) {
+    return (
+      <p className="text-center text-red-500 text-xl mt-4">Błąd podczas ładowania produktów</p>
+    );
+  }
+
+  const searchByCode = products.filter((product) => {
     return product.code.toLowerCase().includes(query.toLowerCase());
   });
 
