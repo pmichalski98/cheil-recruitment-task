@@ -6,9 +6,14 @@ import { ChevronDown } from 'react-feather';
 
 export const Products = () => {
   const { filters, query } = useFilterContext();
-  const { data: products = [], isLoading, error } = useProducts();
-
-  console.log(products);
+  const {
+    data: products = [],
+    isLoading,
+    error,
+  } = useProducts({
+    query,
+    ...filters,
+  });
 
   if (isLoading) {
     return <p className="text-center text-gray-500 text-xl mt-4">Ładowanie...</p>;
@@ -20,31 +25,7 @@ export const Products = () => {
     );
   }
 
-  const searchByCode = products.filter((product) => {
-    return product.code.toLowerCase().includes(query.toLowerCase());
-  });
-
-  const filteredProducts = searchByCode.filter((product) => {
-    if (filters.capacity && product.capacity !== filters.capacity) {
-      return false;
-    }
-    if (filters.energyClass && product.energyClass !== filters.energyClass) {
-      return false;
-    }
-    return !(filters.feature && !product.features.includes(filters.feature));
-  });
-
-  const sortedProducts = filteredProducts.sort((a, b) => {
-    if (filters.sort === 'price') {
-      return a.price.value - b.price.value;
-    }
-    if (filters.sort === 'capacity') {
-      return a.capacity - b.capacity;
-    }
-    return 0;
-  });
-
-  if (filteredProducts.length === 0) {
+  if (products.length === 0) {
     return (
       <div>
         <p className="text-center text-gray-500 text-xl mt-4">
@@ -57,7 +38,7 @@ export const Products = () => {
   return (
     <>
       <div className="grid grid-cols-3 gap-x-4 gap-y-5">
-        {sortedProducts.map((product) => (
+        {products.map((product) => (
           <ProductCard key={product.code} {...product} />
         ))}
       </div>
