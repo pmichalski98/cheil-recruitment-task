@@ -35,6 +35,14 @@ export const getProductsSchema = z.object({
     .optional()
     .or(z.literal(""))
     .transform(emptyToUndefined),
+  page: z
+    .string()
+    .optional()
+    .transform((val) => (val ? Number(val) : undefined)),
+  limit: z
+    .string()
+    .optional()
+    .transform((val) => (val ? Number(val) : undefined)),
 });
 
 export type GetProductsQuery = z.infer<typeof getProductsSchema>;

@@ -11,7 +11,7 @@ export const Search = () => {
 
   return (
     <input
-      placeholder={'Search'}
+      placeholder={'Szukaj'}
       value={query}
       onChange={handleChange}
       className={'text-sm font-normal px-3 py-2 bg-white w-full'}

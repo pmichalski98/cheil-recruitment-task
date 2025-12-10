@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { IProduct, Capacity, EnergyClass, Feature } from '../interfaces/product';
 import { API_URL } from './config';
 
@@ -10,7 +10,16 @@ interface UseProductsParams {
   sort?: 'price' | 'capacity' | '';
 }
 
-const fetchProducts = async (params: UseProductsParams): Promise<IProduct[]> => {
+interface ProductsResponse {
+  products: IProduct[];
+  hasMore: boolean;
+  nextPage: number;
+}
+
+const fetchProducts = async (
+  params: UseProductsParams,
+  page: number
+): Promise<ProductsResponse> => {
   const searchParams = new URLSearchParams();
 
   if (params.query) searchParams.append('query', params.query);
@@ -18,8 +27,9 @@ const fetchProducts = async (params: UseProductsParams): Promise<IProduct[]> => 
   if (params.energyClass) searchParams.append('energyClass', params.energyClass);
   if (params.feature) searchParams.append('feature', params.feature);
   if (params.sort) searchParams.append('sort', params.sort);
+  searchParams.append('page', String(page));
 
-  const response = await fetch(`${API_URL}/products?${searchParams.toString()}`, {
+  const response = await fetch(`${API_URL}/products?${searchParams}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -32,9 +42,11 @@ const fetchProducts = async (params: UseProductsParams): Promise<IProduct[]> => 
 };
 
 export const useProducts = (params: UseProductsParams = {}) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ['products', params],
-    queryFn: () => fetchProducts(params),
+    queryFn: ({ pageParam }) => fetchProducts(params, pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextPage : undefined),
     retry: false,
   });
 };

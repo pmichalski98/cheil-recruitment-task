@@ -3,7 +3,10 @@ import { Product } from "../models/product.model";
 import { GetProductsQuery } from "../schemas/product.schema";
 import { IProduct } from "shared";
 
-export const getAllProducts = (filters: GetProductsQuery) => {
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 6;
+
+export const getAllProducts = async (filters: GetProductsQuery) => {
   const query: FilterQuery<IProduct> = {};
 
   if (filters.query) {
@@ -29,5 +32,18 @@ export const getAllProducts = (filters: GetProductsQuery) => {
     sort.capacity = 1;
   }
 
-  return Product.find(query).sort(sort);
+  const page = filters.page ?? DEFAULT_PAGE;
+  const limit = filters.limit ?? DEFAULT_LIMIT;
+  const skip = (page - 1) * limit;
+
+  const [products, total] = await Promise.all([
+    Product.find(query).sort(sort).skip(skip).limit(limit),
+    Product.countDocuments(query),
+  ]);
+
+  return {
+    products,
+    hasMore: skip + products.length < total,
+    nextPage: page + 1,
+  };
 };

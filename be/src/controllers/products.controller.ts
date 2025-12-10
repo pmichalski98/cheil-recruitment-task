@@ -4,7 +4,9 @@ import { GetProductsQuery } from "../schemas/product.schema";
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
-    const products = await getAllProducts(req.query as GetProductsQuery);
+    const products = await getAllProducts(
+      req.query as unknown as GetProductsQuery
+    );
     res.json(products);
   } catch (error) {
     console.error("Error fetching products:", error);
