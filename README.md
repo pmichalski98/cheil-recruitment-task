@@ -1,3 +1,22 @@
+## Running locally
+
+Prerequisites: Node 20+, Docker, npm.
+
+Install dependencies:
+
+- `npm install`
+
+Run everything with Docker:
+
+- `npm run dev` (builds and starts mongo, backend on :3001, frontend on :5173)
+
+Run without Docker:
+
+- Backend: set `MONGO_URI`, then `npm run dev:be`.
+- Frontend: set `VITE_API_URL` (default `http://localhost:3001/api`), then `npm run dev:fe`.
+
+- DB Seed runs automatically on backend start if the collection is empty.
+
 # Recruitment Full Stack Test Task
 
 Welcome to the Recruitment Full Stack Test Task! This task is designed to assess your skills in building a full-stack application where you'll create the backend using MongoDB as the database and connect it to the frontend located in the 'fe' folder of this repository.
