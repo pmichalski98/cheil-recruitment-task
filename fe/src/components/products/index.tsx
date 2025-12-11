@@ -2,14 +2,15 @@ import { useProducts } from '../../api/products';
 import { ProductCard } from '../cards/Product';
 import { Button } from '../button';
 import { useFilterContext } from '../../contexts/filters';
-import { ChevronDown, Loader } from 'react-feather';
+import { AlertCircle, ChevronDown, Loader, RefreshCw } from 'react-feather';
 
 export const Products = () => {
   const { filters, query } = useFilterContext();
-  const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useProducts({
-    query,
-    ...filters,
-  });
+  const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
+    useProducts({
+      query,
+      ...filters,
+    });
 
   const products = data?.pages.flatMap((page) => page.products) ?? [];
 
@@ -23,7 +24,25 @@ export const Products = () => {
 
   if (error) {
     return (
-      <p className="text-center text-red-500 text-xl mt-4">Błąd podczas ładowania produktów</p>
+      <div className="flex flex-col items-center gap-4 py-12 px-6 mx-auto max-w-md">
+        <div className="rounded-full bg-red-100 p-4">
+          <AlertCircle className="w-8 h-8 text-red-500" />
+        </div>
+        <div className="text-center">
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            Błąd podczas ładowania produktów
+          </h3>
+          <p className="text-gray-500">
+            Nie udało się pobrać produktów. Sprawdź połączenie i spróbuj ponownie.
+          </p>
+        </div>
+        <Button
+          variant="secondary"
+          value="Spróbuj ponownie"
+          icon={<RefreshCw className="w-4 h-4" />}
+          onClick={() => refetch()}
+        />
+      </div>
     );
   }
 

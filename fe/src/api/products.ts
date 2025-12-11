@@ -47,5 +47,6 @@ export const useProducts = (params: UseProductsParams = {}) => {
     queryFn: ({ pageParam }) => fetchProducts(params, pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextPage : undefined),
+    retry: 1,
   });
 };
